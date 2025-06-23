@@ -10,7 +10,7 @@ import Tooltip from "@mui/material/Tooltip";
 import RelatedProducts from "./RelatedProducts";
 import { useParams } from "react-router-dom";
 import { fetchDataFromApi, postData } from "../../utils/Api";
-import { Mycontext } from "../../App";
+import { Mycontext } from "../../context/MyContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Reviews } from "@mui/icons-material";
@@ -24,7 +24,7 @@ const ProductDetails = () => {
     review: "",
     customerRating: 1, // Default to 1 to avoid empty value issues
   });
-  const context = useContext(Mycontext);
+  const { addtoCart } = useContext(Mycontext);
   const [quantity, setQuantity] = useState(1);
   const [activeSize, setActiveSize] = useState(0);
   const [activeTabs, setActiveTabs] = useState(0);
@@ -100,7 +100,7 @@ const ProductDetails = () => {
     );
   };
 
-  const addtoCart = () => {
+  const addtoCartfunc = () => {
     if (activeSize !== null) {
       let user = JSON.parse(localStorage.getItem("user"));
 
@@ -121,7 +121,7 @@ const ProductDetails = () => {
       cartFields.userId = user.id; // Use either logged-in or anonymous user ID
       cartFields.size = productData?.size[activeSize];
 
-      context.addtoCart(cartFields);
+      addtoCart(cartFields);
     } else {
       toast.error("❌ Please Select a Size!", {
         position: "bottom-right",
@@ -376,7 +376,7 @@ const ProductDetails = () => {
                 />
                 <Button
                   className="btn-blue btn-lg btn-big btn-round"
-                  onClick={addtoCart}
+                  onClick={addtoCartfunc}
                 >
                   <FaCartShopping /> &nbsp; Add to cart
                 </Button>

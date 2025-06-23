@@ -13,19 +13,19 @@ import { Rating } from "@mui/material";
 import { IoMdHeartEmpty } from "react-icons/io";
 import ProductModel from "../ProductModal";
 import { Link } from "react-router-dom";
-import { Mycontext } from "../../App";
+import { Mycontext } from "../../context/MyContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { fetchDataFromApi, postData } from "../../utils/Api";
 
 const ProductItem = (props) => {
-  const context = useContext(Mycontext);
+  const { setisOpenProductModel, isOpenProductModal } = useContext(Mycontext);
   const viewProductDetails = (_id) => {
-    context.setisOpenProductModel({ _id: _id, open: true }); // Correct function call
+    setisOpenProductModel({ _id: _id, open: true }); // Correct function call
   };
 
   const closeProductModel = () => {
-    context.setisOpenProductModel({ id: "", open: false });
+    setisOpenProductModel({ id: "", open: false });
   };
 
   const handleLinkClick = () => {
@@ -152,7 +152,7 @@ const ProductItem = (props) => {
         </Link>
       </div>
 
-      {context.isOpenProductModal && (
+      {isOpenProductModal && (
         <ProductModel closeProductModel={closeProductModel} />
       )}
     </>

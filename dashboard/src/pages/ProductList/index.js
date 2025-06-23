@@ -21,7 +21,7 @@ import { FaPencil } from "react-icons/fa6";
 import { FaEye } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import Pagination from "@mui/material/Pagination";
-import { Mycontext } from "../../App";
+import { Mycontext } from "../../context/MyContext";
 import { Link } from "react-router-dom";
 import { emphasize, styled } from "@mui/material/styles";
 import Breadcrumbs from "@mui/material/Breadcrumbs";

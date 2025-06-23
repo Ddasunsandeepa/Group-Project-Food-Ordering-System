@@ -27,7 +27,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { Mycontext } from "../../App";
+import { Mycontext } from "../../context/MyContext";
 import { Link } from "react-router-dom";
 
 export const chartData = [

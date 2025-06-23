@@ -9,7 +9,7 @@ import { IoMdNotifications } from "react-icons/io";
 import { IoSettings } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { Mycontext } from "../../App";
+import { Mycontext } from "../../context/MyContext";
 import { BiSolidCategory } from "react-icons/bi";
 
 const SideBar = () => {

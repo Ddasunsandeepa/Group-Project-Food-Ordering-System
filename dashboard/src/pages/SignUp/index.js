@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import logo from "../../assets/images/906343.png";
-import { Mycontext } from "../../App";
+import { Mycontext } from "../../context/MyContext";
 import { MdEmail } from "react-icons/md";
 import { TbPasswordFingerprint } from "react-icons/tb";
 import { FaEye } from "react-icons/fa";

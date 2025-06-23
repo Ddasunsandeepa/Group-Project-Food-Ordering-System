@@ -3,7 +3,7 @@ import { Button } from "@mui/material";
 import { FaPencil, FaEye } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import Pagination from "@mui/material/Pagination";
-import { Mycontext } from "../../App";
+import { Mycontext } from "../../context/MyContext";
 import { Link, useNavigate } from "react-router-dom";
 import { deleteData, editData, fetchDataFromApi } from "../../utils/Api";
 import TextField from "@mui/material/TextField";

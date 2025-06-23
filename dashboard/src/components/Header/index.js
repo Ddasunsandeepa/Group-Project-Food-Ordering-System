@@ -16,7 +16,7 @@ import PersonAdd from "@mui/icons-material/PersonAdd";
 import Logout from "@mui/icons-material/Logout";
 import { FaShieldAlt } from "react-icons/fa";
 import Divider from "@mui/material/Divider";
-import { Mycontext } from "../../App";
+import { Mycontext } from "../../context/MyContext";
 import UserAvatar from "../UserAvatar";
 import { IoMenu } from "react-icons/io5";
 import { toast, ToastContainer } from "react-toastify";

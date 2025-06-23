@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Mycontext } from "../../App";
+import { Mycontext } from "../../context/MyContext";
 import logo from "../../assets/images/images.png";
 import TextField from "@mui/material/TextField";
 import { Button } from "@mui/material";
@@ -13,9 +13,9 @@ import { ClipLoader } from "react-spinners"; // Importing ClipLoader spinner
 const SignUp = () => {
   const [loading, setLoading] = useState(false); // Loading state
   const context = useContext(Mycontext);
-  useEffect(() => {
-    context.setIsHeaderFooterShow(false);
-  }, []);
+  // useEffect(() => {
+  //   context.setIsHeaderFooterShow(false);
+  // }, []);
   const [formFields, setFormFields] = useState({
     name: "",
     phone: "",
@@ -213,7 +213,7 @@ const SignUp = () => {
                         <Button
                           className="btn-lg btn-big w-100 "
                           variant="outlined"
-                          onClick={() => context.setIsHeaderFooterShow(true)}
+                          // onClick={() => context.setIsHeaderFooterShow(true)}
                         >
                           Cancel
                         </Button>

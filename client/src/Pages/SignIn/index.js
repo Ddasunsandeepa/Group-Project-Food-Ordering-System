@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Mycontext } from "../../App";
+import { Mycontext } from "../../context/MyContext";
 import logo from "../../assets/images/images.png";
 import TextField from "@mui/material/TextField";
 import { Button } from "@mui/material";
@@ -24,9 +24,9 @@ const SignIn = () => {
       [e.target.name]: e.target.value,
     }));
   };
-  useEffect(() => {
-    context.setIsHeaderFooterShow(false);
-  }, []);
+  // useEffect(() => {
+  //   context.setIsHeaderFooterShow(false);
+  // }, []);
   const [formFields, setFormFields] = useState({
     email: "",
     password: "",
@@ -241,7 +241,7 @@ const SignIn = () => {
                   <Button
                     className="btn-lg btn-big col ml-2"
                     variant="outlined"
-                    onClick={() => context.setIsHeaderFooterShow(true)}
+                    // onClick={() => context.setIsHeaderFooterShow(true)}
                   >
                     Cancel
                   </Button>

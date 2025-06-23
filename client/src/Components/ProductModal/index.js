@@ -8,13 +8,13 @@ import { FaHeart } from "react-icons/fa6";
 import { MdCompareArrows } from "react-icons/md";
 import ProductZoom from "../ProductZoom";
 import { useContext, useEffect, useState } from "react";
-import { Mycontext } from "../../App";
+import { Mycontext } from "../../context/MyContext";
 import { fetchDataFromApi, postData } from "../../utils/Api";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const ProductModel = (props) => {
-  const context = useContext(Mycontext);
+  const { addtoCart } = useContext(Mycontext);
   const [activeSize, setActiveSize] = useState(null); // Track selected size
   const [sizePrice, setSizePrice] = useState(props?.data?.price);
   const [catData, setCatData] = useState([]);
@@ -108,7 +108,7 @@ const ProductModel = (props) => {
 
   //   localStorage.setItem("cart", JSON.stringify(cart));
   // };
-  const addtoCart = (data) => {
+  const addtoCartfunc = (data) => {
     if (activeSize !== null) {
       const user = JSON.parse(localStorage.getItem("user"));
       cartFields.productTitle = props?.data?.name;
@@ -120,8 +120,9 @@ const ProductModel = (props) => {
       cartFields.productId = props?.data?._id;
       cartFields.userId = user?.id;
       cartFields.size = props?.data?.size[activeSize];
+      console.log("Add to Cart clicked");
 
-      context.addtoCart(cartFields);
+      addtoCart(cartFields);
     } else {
       toast.error("❌ Please Select a Size!", {
         position: "bottom-right",
@@ -292,7 +293,7 @@ const ProductModel = (props) => {
 
               <Button
                 className="btn-blue btn-lg btn-big btn-round ml-1"
-                onClick={() => addtoCart(props.data)}
+                onClick={() => addtoCartfunc(props.data)}
               >
                 Add to Cart
               </Button>

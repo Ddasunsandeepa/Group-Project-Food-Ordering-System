@@ -11,11 +11,9 @@ import { GiHotMeal } from "react-icons/gi";
 import { FaBloggerB } from "react-icons/fa";
 import { RiContactsFill } from "react-icons/ri";
 import { FaAngleRight } from "react-icons/fa6";
-import { Mycontext } from "../../../App";
 import { fetchDataFromApi } from "../../../utils/Api";
 
 const Navigation = (props) => {
-  const context = useContext(Mycontext);
   const [mealsProducts, setmealsProducts] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
   const [isopenSidebarVal, setisopenSidebar] = useState(false);

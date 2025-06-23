@@ -17,7 +17,7 @@ import { FaCloudArrowUp } from "react-icons/fa6";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { fetchDataFromApi, postData } from "../../utils/Api";
-import { Mycontext } from "../../App";
+import { Mycontext } from "../../context/MyContext";
 import {} from "react-toastify";
 import { useNavigate } from "react-router-dom";
 

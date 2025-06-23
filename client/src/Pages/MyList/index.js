@@ -1,49 +1,51 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Rating from "@mui/material/Rating";
-import QuantityBox from "../../Components/QuantityDropDown";
 import { MdDelete } from "react-icons/md";
-import { Mycontext } from "../../App";
-import { deleteData, editData, fetchDataFromApi } from "../../utils/Api";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { IoBagCheckOutline } from "react-icons/io5";
 import { motion } from "framer-motion";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import QuantityBox from "../../Components/QuantityDropDown"; // Not used here — can remove
+import { Mycontext } from "../../context/MyContext";
+import { deleteData, fetchDataFromApi } from "../../utils/Api";
+
 const MyList = () => {
-  const [loading, setLoaing] = useState(false);
-  const [myListData, setmyListData] = useState([]);
-  const context = useContext(Mycontext);
+  const [loading, setLoading] = useState(true);
+  const [myListData, setMyListData] = useState([]);
+  const { user } = useContext(Mycontext);
+
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    fetchDataFromApi(`/api/myList?userId=${user?._id}`).then((res) => {
-      console.log(res);
-      setmyListData(res);
-    });
-  }, []);
+    const fetchMyList = async () => {
+      if (!user?._id) return;
+      try {
+        const res = await fetchDataFromApi(`/api/myList?userId=${user._id}`);
+        setMyListData(res || []);
+      } catch (err) {
+        console.error("Failed to fetch my list:", err);
+        toast.error("Unable to load wishlist.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const removeItem = (id) => {
-    setLoaing(true);
+    fetchMyList();
+  }, [user]);
 
-    deleteData(`/api/myList/${id}`)
-      .then((res) => {
-        toast.success("Item removed from cart successfully!");
+  const removeItem = async (id) => {
+    setLoading(true);
+    try {
+      await deleteData(`/api/myList/${id}`);
+      toast.success("Item removed from wishlist!");
 
-        setmyListData((prevCart) => prevCart.filter((item) => item._id !== id));
-        setTimeout(() => {
-          const user = JSON.parse(localStorage.getItem("user"));
-          fetchDataFromApi(`/api/myList?userId=${user?._id}`).then((res) => {
-            setmyListData(res);
-            setLoaing(false);
-          });
-        }, 1000);
-      })
-      .catch((error) => {
-        console.error("Error deleting item:", error);
-        toast.error("Failed to remove item. Please try again!");
-        setLoaing(false);
-      });
+      setMyListData((prev) => prev.filter((item) => item._id !== id));
+    } catch (error) {
+      console.error("Error deleting item:", error);
+      toast.error("Failed to remove item. Please try again!");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -55,14 +57,14 @@ const MyList = () => {
           <p className="wishlist-subtitle">
             You have <b>{myListData?.length}</b> items in your wishlist
           </p>
+
           <div className="wishlist-grid">
-            {myListData?.length > 0 ? (
-              myListData.map((item, index) => (
-                <div className="wishlist-card" key={index}>
-                  <Link
-                    to={`/product/${item?.productId}`}
-                    className="wishlist-link"
-                  >
+            {loading ? (
+              <p>Loading...</p>
+            ) : myListData?.length > 0 ? (
+              myListData.map((item) => (
+                <div className="wishlist-card" key={item._id}>
+                  <Link to={`/product/${item?.productId}`} className="wishlist-link">
                     <div className="wishlist-image-container">
                       <img
                         src={item?.images}
@@ -72,11 +74,11 @@ const MyList = () => {
                     </div>
                     <div className="wishlist-info">
                       <h6 className="wishlist-product-title">
-                        {item?.productTitle?.substr(0, 26) + "..."}
+                        {item?.productTitle?.length > 26
+                          ? item.productTitle.slice(0, 26) + "..."
+                          : item.productTitle}
                       </h6>
-                      <p className="wishlist-price">
-                        ${item?.price.toFixed(2)}
-                      </p>
+                      <p className="wishlist-price">${item?.price.toFixed(2)}</p>
                       <Rating
                         name="read-only"
                         value={item.rating}
