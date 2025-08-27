@@ -36,10 +36,10 @@ const Product = () => {
   const { user } = useUser();
   const { addToCart } = useCart();
 
-  useEffect(() => {
-    // console.log("Scrolling to top because product id changed:", id);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [id]);
+  // useEffect(() => {
+  //   // console.log("Scrolling to top because product id changed:", id);
+  //   window.scrollTo({ top: 0, behavior: "smooth" });
+  // }, [id]);
 
   useEffect(() => {
     const fetchProduct = async () => {

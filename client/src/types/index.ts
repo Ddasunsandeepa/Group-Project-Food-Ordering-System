@@ -31,6 +31,15 @@ export interface TabCategory {
   color?: string;
 }
 
+export interface BlogPost {
+  id: number;
+  title: string;
+  date: string;
+  description: string;
+  image: string;
+  category: string;
+}
+
 export interface HomeSwiperProps {
   title?: string;
   subtitle?: string;

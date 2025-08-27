@@ -11,6 +11,7 @@ import WishList from './pages/WishList';
 import CategoryView from './layouts/CategoryView';
 import Product from './pages/Product';
 import ShoppingCartComponent from './pages/Cart';
+import ProductLayout from './layouts/ProductLayout';
 
 
 export const AppRoutes = () => {
@@ -19,7 +20,7 @@ export const AppRoutes = () => {
       {/* Define routes */}
       <Route path="/" element={<MainLayout ><Home /></MainLayout>}/>
       <Route path="/categories/:id" element={<CategoryView />} />
-      <Route path="/product/:id" element={<MainLayout ><Product /></MainLayout>} />
+      <Route path="/product/:id" element={<ProductLayout ><Product /></ProductLayout>} />
       <Route path="/blog" element={<MainLayout ><Blog /></MainLayout>}/>
       <Route path="/contact" element={<MainLayout ><div>Contact</div></MainLayout>}/>
       <Route path="/favorites" element={<MainLayout ><WishList /></MainLayout>}/>
