@@ -72,10 +72,10 @@ const Blog: React.FC = () => {
       <header className="shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
-            <h1 className="text-2xl lg:text-4xl font-bold text-gray-400 mb-4">
+            <h1 className="text-2xl lg:text-4xl font-light text-gray-400 mb-4">
               Our Latest Blog Posts
             </h1>
-            <p className="text-base lg:text-lg text-gray-500 max-w-2xl mx-auto">
+            <p className="text-base lg:text- font-normal text-gray-500 max-w-2xl mx-auto">
               Explore our latest articles on food, recipes, and cooking tips to
               elevate your culinary journey.
             </p>

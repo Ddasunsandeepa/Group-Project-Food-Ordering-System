@@ -12,6 +12,7 @@ import CategoryView from './layouts/CategoryView';
 import Product from './pages/Product';
 import ShoppingCartComponent from './pages/Cart';
 import ProductLayout from './layouts/ProductLayout';
+import ContactPage from './pages/Contacts';
 
 
 export const AppRoutes = () => {
@@ -22,7 +23,7 @@ export const AppRoutes = () => {
       <Route path="/categories/:id" element={<CategoryView />} />
       <Route path="/product/:id" element={<ProductLayout ><Product /></ProductLayout>} />
       <Route path="/blog" element={<MainLayout ><Blog /></MainLayout>}/>
-      <Route path="/contact" element={<MainLayout ><div>Contact</div></MainLayout>}/>
+      <Route path="/contact" element={<MainLayout ><ContactPage /></MainLayout>}/>
       <Route path="/favorites" element={<MainLayout ><WishList /></MainLayout>}/>
       <Route path="/cart" element={<MainLayout ><ShoppingCartComponent /></MainLayout>}/>
       <Route path="/sign-in" element={<AuthLayout ><SignIn /></AuthLayout>}/>
