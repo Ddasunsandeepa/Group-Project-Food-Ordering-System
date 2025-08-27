@@ -18,11 +18,11 @@ const QuantityBox = () => {
   return (
     <div>
       <div className="quantityDrop d-flex align-items-center">
-        <Button onClick={minus}>
+        <Button onClick={minus} aria-label="Decrement">
           <FaMinus />
         </Button>
-        <input type="text" value={inputVal} />
-        <Button onClick={plus}>
+        <input type="text" value={inputVal} readOnly aria-label="Quantity"/>
+        <Button onClick={plus} aria-label="Increment">
           <FaPlus />
         </Button>
       </div>

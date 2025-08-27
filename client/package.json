@@ -9,7 +9,7 @@
     "@mui/material": "^6.1.4",
     "@mui/styled-engine-sc": "^6.1.3",
     "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
+    "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.7",
     "bootstrap": "^4.1.3",
@@ -53,5 +53,20 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(css|less|scss|sass)$": "<rootDir>/src/__mocks__/styleMock.js",
+      "^swiper/react$": "<rootDir>/src/__mocks__/swiper.js",
+      "^swiper/css$": "<rootDir>/src/__mocks__/styleMock.js",
+      "^swiper/css/navigation$": "<rootDir>/src/__mocks__/styleMock.js",
+      "^swiper/modules$": "<rootDir>/src/__mocks__/swiper.js"
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!(axios)/)"
+    ]
+  },
+  "devDependencies": {
+    "babel-jest": "^29.7.0"
   }
 }

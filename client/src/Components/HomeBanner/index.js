@@ -18,11 +18,11 @@ const HomeBanner = () => {
       <div className="HomeBannerSection">
         <Slider {...settings}>
           <div className="item">
-            <div className="overlay"></div>
+            <div className="overlay" data-testid="slide-overlay"></div>
             <img
               src="https://marketplace.canva.com/EAFh8EnFLW4/1/0/1600w/canva-maroon-and-yellow-modern-food-promotion-banner-landscape-xPGAjV9zPS0.jpg"
               className="w-100"
-              alt=""
+              alt="image1"
             />
             <div className="banner-content">
               <h2>Delicious Meals</h2>
@@ -34,11 +34,11 @@ const HomeBanner = () => {
             </div>
           </div>
           <div className="item">
-            <div className="overlay"></div>
+            <div className="overlay" data-testid="slide-overlay"></div>
             <img
               src="https://marketplace.canva.com/EAF4CZw2lck/1/0/1600w/canva-red-and-white-modern-new-spicy-pizza-food-menu-banner-LgYqmrP8vdI.jpg"
               className="w-100"
-              alt=""
+              alt="image2"
             />
             <div className="banner-content">
               <h2>Spicy Pizza</h2>
@@ -50,11 +50,11 @@ const HomeBanner = () => {
             </div>
           </div>
           <div className="item">
-            <div className="overlay"></div>
+            <div className="overlay" data-testid="slide-overlay"></div>
             <img
               src="https://static.vecteezy.com/system/resources/previews/030/033/459/large_2x/sushi-rolls-banner-free-space-text-mockup-fast-food-top-view-empty-professional-phonography-photo.jpg"
               className="w-100"
-              alt=""
+              alt="image3"
             />
             <div className="banner-content">
               <h2>Fresh Sushi</h2>
@@ -66,11 +66,11 @@ const HomeBanner = () => {
             </div>
           </div>
           <div className="item">
-            <div className="overlay"></div>
+            <div className="overlay" data-testid="slide-overlay"></div>
             <img
               src="https://img.pikbest.com/backgrounds/20210514/sushi-japanese-food-banner_5964063.jpg!bwr800"
               className="w-100"
-              alt=""
+              alt="image4"
             />
             <div className="banner-content">
               <h2>Delicious Food</h2>

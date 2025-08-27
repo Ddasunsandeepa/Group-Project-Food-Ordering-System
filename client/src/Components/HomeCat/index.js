@@ -45,14 +45,14 @@ const HomeCat = () => {
         >
           {itemBg?.map((item, index) => {
             return (
-              <SwiperSlide>
+              <SwiperSlide key={index}>
                 <div
                   className="item text-center cursor"
                   style={{ background: item }}
                 >
                   <img
                     src="https://adminsc.pizzahut.lk//images/mainmenu/52b93289-98a9-4296-87a4-0a0e0acda8c6.jpg"
-                    alt=""
+                    alt="image1"
                   />
                   <h6 style={{ color: "black" }} className="mt-3">Pizza Mania</h6>
                 </div>

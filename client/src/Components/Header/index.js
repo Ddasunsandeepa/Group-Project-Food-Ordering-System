@@ -32,7 +32,7 @@ const Header = () => {
                 </Link>
               </div>
               <div className="col-sm-10 d-flex align-items-center part2">
-                {context.countrList.length !== 0 && <CountryDropdown />}
+                {context.countryList.length !== 0 && <CountryDropdown />}
 
                 <SearchBox />
 
