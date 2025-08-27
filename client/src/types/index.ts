@@ -1,3 +1,7 @@
+// =============================================================================
+// CORE PRODUCT TYPES
+// =============================================================================
+
 export interface Product {
   _id: string;
   name: string;
@@ -26,70 +30,6 @@ export interface Product {
   catName: string;
 }
 
-export interface TabCategory {
-  name: string;
-  color?: string;
-}
-
-export interface BlogPost {
-  id: number;
-  title: string;
-  date: string;
-  description: string;
-  image: string;
-  category: string;
-}
-
-export interface HomeSwiperProps {
-  title?: string;
-  subtitle?: string;
-  showViewAllButton?: boolean;
-  onViewAllClick?: () => void;
-  showTabs?: boolean;
-  categories?: TabCategory[];
-  products?: Product[];
-  slidesPerView?: number;
-  spaceBetween?: number;
-  autoplay?: boolean;
-  autoplayDelay?: number;
-  showDoubleRow?: boolean;
-  itemsPerRow?: number;
-  className?: string;
-  headerClassName?: string;
-  swiperClassName?: string;
-  loading?: boolean;
-  error?: string | null; 
-}
-
-export interface Review {
-  _id: string;
-  productId: string;
-  customerName: string;
-  customerRating: number;
-  review: string;
-}
-
-export interface ProductsContextType {
-  products: Product[];
-  loading: boolean;
-  error: string | null;
-  isVegan: boolean;
-  setIsVegan: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-export interface SimpleSwiperProps {
-  children: React.ReactNode;
-  slidesPerView: number;
-  spaceBetween: number;
-  autoplay: boolean;
-  autoplayDelay?: number;
-  loading: boolean;
-  error?: string | null;
-  seeAllCard?: React.ReactNode;
-}
-
-//contexts
-// category context
 export interface Category {
   _id: string;
   name: string;
@@ -100,34 +40,23 @@ export interface Category {
   id: string;
 }
 
-
-export interface CartItem {
-  id?: string;
-  productTitle: string;
-  images: string;
-  rating: number;
-  price: number;
-  quantity: number;
-  subTotal: number;
-  productId: string;
-  userId?: string;
-  size: string;
-}
-
-
-export interface SearchSug {
+export interface TabCategory {
   name: string;
-  id : string;
+  color?: string;
 }
 
-export interface CategoryContextType {
-  categories: Category[];
-  loading: boolean;
-  error: string | null;
-  refetch: () => void;
+export interface Review {
+  _id: string;
+  productId: string;
+  customerName: string;
+  customerRating: number;
+  review: string;
 }
 
-// user context
+// =============================================================================
+// USER & AUTHENTICATION TYPES
+// =============================================================================
+
 export interface User {
   id: string;
   name: string;
@@ -137,15 +66,6 @@ export interface User {
   token: string;
   isVegan: boolean;
 }
-
-export interface UserContextType {
-  user: User | null;
-  setUser: (user: User | null) => void;
-  isLoggedIn: boolean;
-  loading : boolean;
-  logout: () => void;
-}
-
 
 export interface SignUpResponse {
   user: {
@@ -165,8 +85,33 @@ export interface SignupError {
   msg: string;
 }
 
+export interface SignInContainerProps {
+  email: string;
+  setEmail: (email: string) => void;
+  password: string;
+  setPassword: (password: string) => void;
+  loading: boolean;
+  setLoading: (loading: boolean) => void;
+  error: string | null;
+  setError: (error: string | null) => void;
+}
 
-//favorites context
+// =============================================================================
+// CART & FAVORITES TYPES
+// =============================================================================
+
+export interface CartItem {
+  id?: string;
+  productTitle: string;
+  images: string;
+  rating: number;
+  price: number;
+  quantity: number;
+  subTotal: number;
+  productId: string;
+  userId?: string;
+  size: string;
+}
 
 export interface FavoriteItem {
   _id: string;
@@ -178,20 +123,89 @@ export interface FavoriteItem {
   userId: string;
 }
 
+// =============================================================================
+// BLOG & CONTENT TYPES
+// =============================================================================
+
+export interface BlogPost {
+  id: number;
+  title: string;
+  date: string;
+  description: string;
+  image: string;
+  category: string;
+}
+
+export interface SearchSug {
+  name: string;
+  id: string;
+}
+
+// =============================================================================
+// COMPONENT PROPS TYPES
+// =============================================================================
+
+export interface HomeSwiperProps {
+  title?: string;
+  subtitle?: string;
+  showViewAllButton?: boolean;
+  onViewAllClick?: () => void;
+  showTabs?: boolean;
+  categories?: TabCategory[];
+  products?: Product[];
+  slidesPerView?: number;
+  spaceBetween?: number;
+  autoplay?: boolean;
+  autoplayDelay?: number;
+  showDoubleRow?: boolean;
+  itemsPerRow?: number;
+  className?: string;
+  headerClassName?: string;
+  swiperClassName?: string;
+  loading?: boolean;
+  error?: string | null;
+}
+
+export interface SimpleSwiperProps {
+  children: React.ReactNode;
+  slidesPerView: number;
+  spaceBetween: number;
+  autoplay: boolean;
+  autoplayDelay?: number;
+  loading: boolean;
+  error?: string | null;
+  seeAllCard?: React.ReactNode;
+}
+
+// =============================================================================
+// CONTEXT TYPES
+// =============================================================================
+
+export interface ProductsContextType {
+  products: Product[];
+  loading: boolean;
+  error: string | null;
+  isVegan: boolean;
+  setIsVegan: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export interface CategoryContextType {
+  categories: Category[];
+  loading: boolean;
+  error: string | null;
+  refetch: () => void;
+}
+
+export interface UserContextType {
+  user: User | null;
+  setUser: (user: User | null) => void;
+  isLoggedIn: boolean;
+  loading: boolean;
+  logout: () => void;
+}
+
 export interface FavoritesContextType {
   favorites: FavoriteItem[];
   loading: boolean;
   refreshFavorites: () => void;
-}
-
-//auth
-export interface SignInContainerProps {
-  email: string;
-  setEmail: (email: string) => void;
-  password: string;
-  setPassword: (password: string) => void;
-  loading: boolean;
-  setLoading: (loading: boolean) => void;
-  error: string | null;
-  setError: (error: string | null) => void;
 }
