@@ -21,6 +21,7 @@ import {
 import { useParams, useNavigate } from "react-router-dom";
 import { useProductContext } from "@/contexts/ProductContext";
 import { Product } from "@/types";
+import { toast } from "sonner";
 
 const { CategoryContext } = CategoryModule;
 
@@ -64,7 +65,7 @@ function ImageItem({ src, onRemove }: ImageItemProps) {
 
 export default function ProductEditPage() {
   const { categories } = useContext(CategoryContext);
-  const { products } = useProductContext();
+  const { products, fetchProducts } = useProductContext();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -122,16 +123,32 @@ export default function ProductEditPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData) return;
-
     setIsSubmitting(true);
+
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      console.log("Product updated:", formData);
-      // toast.success(`${formData.name} updated successfully.`);
+      const response = await fetch(
+        `http://localhost:4000/api/products/${formData._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData), // sends the entire formData
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok)
+        throw new Error(data.message || "Failed to update product");
+
+      console.log("Product updated:", data.product);
+      toast.success(`${data.product.name} updated successfully.`);
+
+      fetchProducts();
     } catch (error) {
-      console.error("Failed to update product:", error);
-      // toast.error("Failed to update product.");
+      console.error("Error updating product:", error);
+      toast.error("Failed to update product.");
     } finally {
       setIsSubmitting(false);
     }
@@ -379,7 +396,7 @@ export default function ProductEditPage() {
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="bg-blue-600 hover:bg-blue-700 min-w-[120px]"
+              className="bg-orange-400 hover:bg-orange-400 min-w-[120px]"
             >
               {isSubmitting ? (
                 <div className="flex items-center gap-2">
