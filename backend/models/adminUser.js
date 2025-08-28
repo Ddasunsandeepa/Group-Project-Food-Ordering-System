@@ -19,8 +19,9 @@ const adminUserSchema = mongoose.Schema(
       required: true,
     },
     permissions: {
-      type: [String], // e.g., ["read", "write"]
-      default: [],
+      type: [String],
+      enum: ["view", "write", "super"], 
+      default: ["view"],        
     },
     isSuper: {
       type: Boolean, // true = super admin (full access)
