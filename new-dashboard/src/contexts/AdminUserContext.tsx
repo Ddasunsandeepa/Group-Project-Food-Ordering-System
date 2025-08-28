@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 export type Permission = "view" | "write" | "super";
 
@@ -26,6 +27,7 @@ export interface AdminUserContextType {
 const AdminUserContext = createContext<AdminUserContextType | undefined>(undefined);
 
 export const AdminUserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const navigate = useNavigate();
   const [admin, setAdmin] = useState<AdminUser | null>(() => {
     const stored = localStorage.getItem("admin");
     if (!stored) return null;
@@ -53,6 +55,7 @@ export const AdminUserProvider: React.FC<{ children: ReactNode }> = ({ children 
   const logout = () => {
     setAdmin(null);
     localStorage.removeItem("admin");
+     navigate("/admin-login");
   };
 
   const isAuthenticated = !!admin?.token;
