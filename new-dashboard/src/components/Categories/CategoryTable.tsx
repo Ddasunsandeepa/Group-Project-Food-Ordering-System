@@ -1,8 +1,8 @@
 "use client";
 
-import { Product } from "@/types";
+import { Category } from "@/types";
 import { useState } from "react";
-import ProductRow from "./ProductRow";
+import CategoryRow from "./CategoryRow";
 import {
   Pagination,
   PaginationContent,
@@ -12,8 +12,8 @@ import {
   PaginationNext,
 } from "@/components/ui/pagination";
 
-interface ProductTableProps {
-  products: Product[];
+interface CategoryTableProps {
+  categories: Category[];
 }
 
 interface DropdownProps {
@@ -43,27 +43,21 @@ function Dropdown({ label, value, options, onChange }: DropdownProps) {
   );
 }
 
-export default function ProductTable({ products }: ProductTableProps) {
-  const [showBy, setShowBy] = useState("");
-  const [categoryBy, setCategoryBy] = useState("");
+export default function CategoryTable({ categories }: CategoryTableProps) {
+  const [filterColor, setFilterColor] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  const categories = Array.from(
-    new Set(products.map((p) => p.category.name))
-  ).sort();
-  const types = Array.from(new Set(products.map((p) => p.type))).sort();
+  const colors = Array.from(new Set(categories.map((c) => c.color))).sort();
 
-  // Filtered products
-  const filteredProducts = products.filter((product) => {
-    const matchesShow = !showBy || product.type === showBy;
-    const matchesCategory = !categoryBy || product.category.name === categoryBy;
-    return matchesShow && matchesCategory;
+  // Filtered categories
+  const filteredCategories = categories.filter((cat) => {
+    return !filterColor || cat.color === filterColor;
   });
 
   // Pagination calculations
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-  const paginatedProducts = filteredProducts.slice(
+  const totalPages = Math.ceil(filteredCategories.length / itemsPerPage);
+  const paginatedCategories = filteredCategories.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -72,14 +66,18 @@ export default function ProductTable({ products }: ProductTableProps) {
     <div className="bg-gray-950 rounded-lg shadow-md border border-gray-800 overflow-hidden">
       {/* Header */}
       <div className="px-6 py-4 border-b border-gray-800">
-        <h2 className="text-xl font-semibold text-gray-100">Products</h2>
+        <h2 className="text-xl font-semibold text-gray-100">Categories</h2>
       </div>
 
       {/* Filters */}
       <div className="px-6 py-4 bg-gray-900 border-b border-gray-800">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Dropdown label="Show By" value={showBy} options={types} onChange={setShowBy} />
-          <Dropdown label="Category By" value={categoryBy} options={categories} onChange={setCategoryBy} />
+          <Dropdown
+            label="Filter by Color"
+            value={filterColor}
+            options={colors}
+            onChange={setFilterColor}
+          />
         </div>
       </div>
 
@@ -89,31 +87,29 @@ export default function ProductTable({ products }: ProductTableProps) {
           <thead className="bg-gray-900">
             <tr>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">
-                Product
+                Name
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">
-                Category
+                Description
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">
-                Discount
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">
-                Price
+                Color
               </th>
               <th className="px-4 text-center py-3 text-xs font-medium text-gray-200 uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
+
           <tbody className="bg-gray-950 divide-y divide-gray-800">
-            {paginatedProducts.length > 0 ? (
-              paginatedProducts.map((product) => (
-                <ProductRow key={product._id} product={product} />
+            {paginatedCategories.length > 0 ? (
+              paginatedCategories.map((category) => (
+                <CategoryRow key={category._id} category={category} />
               ))
             ) : (
               <tr>
-                <td colSpan={4} className="px-4 py-8 text-center text-gray-400">
-                  No products found matching the selected filters.
+                <td colSpan={5} className="px-4 py-8 text-center text-gray-400">
+                  No categories found matching the selected filters.
                 </td>
               </tr>
             )}
@@ -138,7 +134,9 @@ export default function ProductTable({ products }: ProductTableProps) {
                   <PaginationLink
                     href="#"
                     onClick={() => setCurrentPage(i + 1)}
-                    className={currentPage === i + 1 ? "bg-gray-700 text-gray-100" : ""}
+                    className={
+                      currentPage === i + 1 ? "bg-gray-700 text-gray-100" : ""
+                    }
                   >
                     {i + 1}
                   </PaginationLink>
@@ -148,7 +146,9 @@ export default function ProductTable({ products }: ProductTableProps) {
               <PaginationItem>
                 <PaginationNext
                   href="#"
-                  onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                  onClick={() =>
+                    setCurrentPage((p) => Math.min(p + 1, totalPages))
+                  }
                 />
               </PaginationItem>
             </PaginationContent>
@@ -157,10 +157,11 @@ export default function ProductTable({ products }: ProductTableProps) {
       )}
 
       {/* Footer */}
-      {filteredProducts.length > 0 && (
+      {filteredCategories.length > 0 && (
         <div className="px-6 py-3 bg-gray-900 border-t border-gray-800">
           <p className="text-sm text-gray-400">
-            Showing {paginatedProducts.length} of {filteredProducts.length} filtered products
+            Showing {paginatedCategories.length} of {filteredCategories.length}{" "}
+            filtered categories
           </p>
         </div>
       )}

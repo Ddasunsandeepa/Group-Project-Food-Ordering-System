@@ -14,6 +14,8 @@ import Home from "./pages/Home";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import ProductEditPage from "./pages/ProductEditPage";
 import ProductAddPage from "./pages/ProductAddPage";
+import CategoryEditPage from "./pages/CategoryEditPage";
+import CategoryAddPage from "./pages/CategoryAddPage";
 
 export const AppRoutes = () => {
   return (
@@ -58,17 +60,17 @@ export const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <Dashboard>
-            <ProductEditPage />
+              <ProductEditPage />
             </Dashboard>
           </ProtectedRoute>
         }
       />
-            <Route
+      <Route
         path="/dashboard/products/add"
         element={
           <ProtectedRoute>
             <Dashboard>
-            <ProductAddPage />
+              <ProductAddPage />
             </Dashboard>
           </ProtectedRoute>
         }
@@ -79,6 +81,26 @@ export const AppRoutes = () => {
           <ProtectedRoute>
             <Dashboard>
               <CategoryPage />
+            </Dashboard>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/dashboard/categories/:id/edit"
+        element={
+          <ProtectedRoute>
+            <Dashboard>
+              <CategoryEditPage />
+            </Dashboard>
+          </ProtectedRoute>
+        }
+      />
+             <Route
+        path="/dashboard/categories/add"
+        element={
+          <ProtectedRoute>
+            <Dashboard>
+            <CategoryAddPage />
             </Dashboard>
           </ProtectedRoute>
         }

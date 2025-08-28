@@ -63,10 +63,10 @@ const handleDelete = async () => {
           </div>
         </div>
       </td>
-      <td className="px-4 py-4 text-sm text-gray-200 hidden md:block">
+      <td className="px-4 py-4 text-sm text-gray-200">
         {product.category.name}
       </td>
-      <td className="px-4 py-4 text-sm text-gray-200 hidden md:block">
+      <td className="px-4 py-4 text-sm text-gray-200">
         {product.discount}%
       </td>
       <td className="px-4 py-4 text-sm font-medium text-gray-200">

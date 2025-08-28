@@ -16,6 +16,7 @@ const { CategoryContext } = CategoryModule;
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { CategoriesHeader } from "@/components/Categories/CategoriesHeader";
+import CategoryTable from "@/components/Categories/CategoryTable";
 
 export default function CategoriesPage() {
   const { categories } = useContext(CategoryContext);
@@ -45,7 +46,7 @@ export default function CategoriesPage() {
         onAddCategory={handleAddCategory}
       />
 
-      {/* <CategoryTable categories={categories} /> */}
+      <CategoryTable categories={categories} />
     </div>
   );
 }

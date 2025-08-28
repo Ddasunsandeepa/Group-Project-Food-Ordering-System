@@ -1,26 +1,23 @@
 "use client";
 
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import CategoryModule from "../contexts/CategoryContext";
 import {
   Save,
   ArrowLeft,
   Plus,
   X,
-  Package,
-  DollarSign,
   Tag,
   Image as ImageIcon,
+  Palette,
 } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useProductContext } from "@/contexts/ProductContext";
-import { Product } from "@/types";
+import CategoryModule from "../contexts/CategoryContext";
+import { Category } from "@/types";
 import { toast } from "sonner";
 import { Permission, useAdminUser } from "@/contexts/AdminUserContext";
 
@@ -40,7 +37,7 @@ function ImageItem({ src, onRemove }: ImageItemProps) {
         {!imageError ? (
           <img
             src={src}
-            alt="Product image"
+            alt="Category image"
             className="w-full h-full object-cover"
             onError={() => setImageError(true)}
           />
@@ -64,48 +61,98 @@ function ImageItem({ src, onRemove }: ImageItemProps) {
   );
 }
 
-export default function ProductEditPage() {
-  const { categories } = useContext(CategoryContext);
-  const { products, fetchProducts } = useProductContext();
+interface ColorPickerProps {
+  value: string;
+  onChange: (color: string) => void;
+}
+
+function ColorPicker({ value, onChange }: ColorPickerProps) {
+  const predefinedColors = [
+    "#fca5a5", // soft red
+    "#fdba74", // soft orange
+    "#fde68a", // soft yellow
+    "#86efac", // soft green
+    "#93c5fd", // soft blue
+    "#c4b5fd", // soft violet
+    "#f9a8d4", // soft pink
+    "#67e8f9", // soft cyan
+    "#d9f99d", // soft lime
+    "#fcd34d", // soft amber
+  ];
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center gap-2">
+        <Input
+          type="color"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-12 h-10 p-1 bg-gray-800 border-gray-700 rounded cursor-pointer"
+        />
+        <Input
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="flex-1 bg-gray-800 border-gray-700 text-white focus:border-blue-500"
+          placeholder="#000000"
+        />
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {predefinedColors.map((color) => (
+          <button
+            key={color}
+            type="button"
+            onClick={() => onChange(color)}
+            className={`w-8 h-8 rounded-full border-2 ${
+              value === color ? "border-white" : "border-gray-600"
+            } hover:scale-110 transition-transform`}
+            style={{ backgroundColor: color }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default function CategoryEditPage() {
+  const { categories, refetch } = useContext(CategoryContext);
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState<Product | null>(null);
+  const [formData, setFormData] = useState<Category | null>(null);
   const [newImage, setNewImage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-    const { admin } = useAdminUser();
-  
-    const hasPermission = (perm: Permission) => {
-      return admin?.permissions?.includes(perm);
-    };
-  
-    useEffect(() => {
-      if (!hasPermission("write")) {
-        navigate("/");
-        toast.error("You do not have permission to edit products.");
-      }
-    }, [admin, navigate]);
+  const { admin } = useAdminUser();
 
-  // Load product from context by param
+  const hasPermission = (perm: Permission) => {
+    return admin?.permissions?.includes(perm);
+  };
+
   useEffect(() => {
-    if (products && id) {
-      const prod = products.find((p) => p._id === id);
-      if (prod) setFormData({ ...prod });
+    if (!hasPermission("write")) {
+      navigate("/");
+      toast.error("You do not have permission to edit categories.");
     }
-  }, [products, id]);
+  }, [admin, navigate]);
+
+  // Load category from context by param
+  useEffect(() => {
+    if (categories && id) {
+      const category = categories.find((c) => c._id === id);
+      if (category) setFormData({ ...category });
+    }
+  }, [categories, id]);
 
   if (!formData)
-    return <p className="text-white text-center mt-10">Loading product...</p>;
+    return <p className="text-white text-center mt-10">Loading category...</p>;
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => (prev ? { ...prev, [name]: value } : prev));
   };
 
-  const handleSwitchChange = (name: string, value: boolean) => {
-    setFormData((prev) => (prev ? { ...prev, [name]: value } : prev));
+  const handleColorChange = (color: string) => {
+    setFormData((prev) => (prev ? { ...prev, color } : prev));
   };
 
   const handleAddImage = () => {
@@ -127,41 +174,39 @@ export default function ProductEditPage() {
     }
   };
 
-  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selected = categories.find((c) => c._id === e.target.value);
-    if (selected && formData) {
-      setFormData({ ...formData, category: selected, catName: selected.name });
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/api/products/${formData._id}`,
+        `${import.meta.env.VITE_BASE_URL}/api/category/${formData._id}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(formData), // sends the entire formData
+          body: JSON.stringify({
+            name: formData.name,
+            description: formData.description,
+            color: formData.color,
+            images: formData.images,
+          }),
         }
       );
 
       const data = await response.json();
 
       if (!response.ok)
-        throw new Error(data.message || "Failed to update product");
+        throw new Error(data.message || "Failed to update category");
 
-      console.log("Product updated:", data.product);
-      toast.success(`${data.product.name} updated successfully.`);
+      console.log("Category updated:", data);
+      toast.success(`${data.name} updated successfully.`);
 
-      fetchProducts();
+      refetch();
     } catch (error) {
-      console.error("Error updating product:", error);
-      toast.error("Failed to update product.");
+      console.error("Error updating category:", error);
+      toast.error("Failed to update category.");
     } finally {
       setIsSubmitting(false);
     }
@@ -180,9 +225,9 @@ export default function ProductEditPage() {
               <ArrowLeft className="w-5 h-5 text-gray-400" />
             </button>
             <div>
-              <h1 className="text-2xl font-bold text-white">Edit Product</h1>
+              <h1 className="text-2xl font-bold text-white">Edit Category</h1>
               <p className="text-sm text-gray-400">
-                Update product information and settings
+                Update category information and settings
               </p>
             </div>
           </div>
@@ -196,15 +241,15 @@ export default function ProductEditPage() {
           <Card className="bg-gray-900 border-gray-800">
             <CardHeader className="pb-3">
               <CardTitle className="text-lg text-white flex items-center gap-2">
-                <Package className="w-5 h-5" />
+                <Tag className="w-5 h-5" />
                 Basic Information
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="md:col-span-2">
+              <div className="grid grid-cols-1 gap-4">
+                <div>
                   <Label htmlFor="name" className="text-gray-300">
-                    Product Name
+                    Category Name
                   </Label>
                   <Input
                     id="name"
@@ -212,10 +257,10 @@ export default function ProductEditPage() {
                     value={formData.name}
                     onChange={handleChange}
                     className="bg-gray-800 border-gray-700 text-white focus:border-blue-500"
-                    placeholder="Enter product name"
+                    placeholder="Enter category name"
                   />
                 </div>
-                <div className="md:col-span-2">
+                <div>
                   <Label htmlFor="description" className="text-gray-300">
                     Description
                   </Label>
@@ -225,128 +270,39 @@ export default function ProductEditPage() {
                     value={formData.description}
                     onChange={handleChange}
                     className="bg-gray-800 border-gray-700 text-white focus:border-blue-500"
-                    placeholder="Enter product description"
+                    placeholder="Enter category description"
                   />
-                </div>
-                <div>
-                  <Label htmlFor="category" className="text-gray-300">
-                    Category
-                  </Label>
-                  <select
-                    id="category"
-                    value={formData.category._id}
-                    onChange={handleCategoryChange}
-                    className="w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-white focus:border-blue-500 focus:outline-none"
-                  >
-                    {categories.map((cat) => (
-                      <option key={cat._id} value={cat._id}>
-                        {cat.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <Label htmlFor="type" className="text-gray-300">
-                    Type
-                  </Label>
-                  <select
-                    id="type"
-                    name="type"
-                    value={formData.type}
-                    onChange={handleChange}
-                    className="w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-white focus:border-blue-500 focus:outline-none"
-                  >
-                    <option value="Vegetarian">Vegetarian</option>
-                    <option value="Non-Vegetarian">Non-Vegetarian</option>
-                  </select>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Pricing & Stock */}
+          {/* Color Settings */}
           <Card className="bg-gray-900 border-gray-800">
             <CardHeader className="pb-3">
               <CardTitle className="text-lg text-white flex items-center gap-2">
-                <DollarSign className="w-5 h-5" />
-                Pricing & Stock
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Label htmlFor="price" className="text-gray-300">
-                    Current Price
-                  </Label>
-                  <Input
-                    id="price"
-                    name="price"
-                    type="number"
-                    step="0.01"
-                    value={formData.price}
-                    onChange={handleChange}
-                    className="bg-gray-800 border-gray-700 text-white focus:border-blue-500"
-                    placeholder="0.00"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="oldPrice" className="text-gray-300">
-                    Original Price
-                  </Label>
-                  <Input
-                    id="oldPrice"
-                    name="oldPrice"
-                    type="number"
-                    step="0.01"
-                    value={formData.oldPrice || ""}
-                    onChange={handleChange}
-                    className="bg-gray-800 border-gray-700 text-white focus:border-blue-500"
-                    placeholder="0.00"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="countInStock" className="text-gray-300">
-                    Stock Status
-                  </Label>
-                  <select
-                    id="countInStock"
-                    name="countInStock"
-                    value={formData.countInStock} // now this will be "In Stock" or "Out of Stock"
-                    onChange={handleChange}
-                    className="w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-white focus:border-blue-500 focus:outline-none"
-                  >
-                    <option value="In Stock">In Stock</option>
-                    <option value="Out of Stock">Out of Stock</option>
-                  </select>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Product Settings */}
-          <Card className="bg-gray-900 border-gray-800">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg text-white flex items-center gap-2">
-                <Tag className="w-5 h-5" />
-                Product Settings
+                <Palette className="w-5 h-5" />
+                Color Theme
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-between p-4 bg-gray-800 rounded-lg">
-                <div>
-                  <Label className="text-gray-300 font-medium">
-                    Featured Product
-                  </Label>
-                  <p className="text-sm text-gray-400">
-                    Show this product in featured sections
-                  </p>
-                </div>
-                <Switch
-                  checked={formData.isFeatured}
-                  onCheckedChange={(checked) =>
-                    handleSwitchChange("isFeatured", checked)
-                  }
+              <div>
+                <Label htmlFor="color" className="text-gray-300 mb-3 block">
+                  Category Color
+                </Label>
+                <ColorPicker
+                  value={formData.color}
+                  onChange={handleColorChange}
                 />
+                <div className="mt-3 p-3 rounded-lg border border-gray-700 bg-gray-800">
+                  <p className="text-sm text-gray-400 mb-2">Preview:</p>
+                  <div
+                    className="w-full h-12 rounded-lg flex items-center justify-center text-white font-medium"
+                    style={{ backgroundColor: formData.color }}
+                  >
+                    {formData.name || "Category Name"}
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -356,7 +312,7 @@ export default function ProductEditPage() {
             <CardHeader className="pb-3">
               <CardTitle className="text-lg text-white flex items-center gap-2">
                 <ImageIcon className="w-5 h-5" />
-                Product Images
+                Category Images
                 <Badge
                   variant="secondary"
                   className="bg-gray-800 text-gray-300 ml-2"
@@ -409,7 +365,7 @@ export default function ProductEditPage() {
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="bg-orange-400 hover:bg-orange-400 min-w-[120px]"
+              className="bg-orange-400 hover:bg-orange-500 min-w-[120px]"
             >
               {isSubmitting ? (
                 <div className="flex items-center gap-2">
