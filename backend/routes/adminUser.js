@@ -122,7 +122,7 @@ router.post("/signin", async (req, res) => {
 });
 
 // Protected: Get all admins
-router.get("/", verifyAdminToken, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const admins = await AdminUser.find().select("-password");
     res.status(200).json({ status: true, admins });

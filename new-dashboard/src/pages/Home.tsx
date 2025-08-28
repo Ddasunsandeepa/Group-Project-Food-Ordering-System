@@ -1,13 +1,12 @@
-
-import SectionCard from "@/components/home/SectionCards"
+import SectionCard from "@/components/home/SectionCards";
+import { DashboardWelcomeBanner } from "@/components/home/WelcomeBannerHome";
 
 export default function Home() {
-
   return (
-    <div className="p-6 w-full">
-      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
+    <div className="px-6 w-full">
       <div className="w-full px-3">
-          <SectionCard />
+        <DashboardWelcomeBanner />
+        <SectionCard />
       </div>
     </div>
   );
