@@ -11,6 +11,7 @@ import ReviewsPage from "./pages/ReviewsPage";
 import AdminsPage from "./pages/AdminsPage";
 import SettingsPage from "./pages/SettingsPage";
 import Home from "./pages/Home";
+import ProductDetailPage from "./pages/ProductDetailPage";
 
 export const AppRoutes = () => {
   return (
@@ -40,6 +41,17 @@ export const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/dashboard/products/:id"
+        element={
+          <ProtectedRoute>
+            <Dashboard>
+              <ProductDetailPage />
+            </Dashboard>
+          </ProtectedRoute>
+        }
+      />
+
       <Route
         path="/dashboard/categories"
         element={

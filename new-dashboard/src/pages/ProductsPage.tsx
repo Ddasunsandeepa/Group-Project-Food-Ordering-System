@@ -9,15 +9,18 @@ import {
 } from "@/components/ui/breadcrumb";
 
 import { ProductsHeader } from "@/components/products/ProductsHeader";
-import { useState } from "react";
+import { useProductContext } from "@/contexts/ProductContext";
+import ProductTable from "@/components/products/ProductTable";
 
 export default function ProductsPage() {
-  const [totalProducts, setTotalProducts] = useState(123); // Example number
+  const { products } = useProductContext();
+  const totalProducts = products.length;
+
+  
+
 
   const handleAddProduct = () => {
     console.log("Add Product clicked");
-    // Open modal or navigate to add product page
-    setTotalProducts((prev) => prev + 1); // just for demo
   };
 
   return (
@@ -37,7 +40,7 @@ export default function ProductsPage() {
         totalProducts={totalProducts}
         onAddProduct={handleAddProduct}
       />
-      {/* Other sections like product list/table can go here */}
+      <ProductTable products={products} />
     </div>
   );
 }
