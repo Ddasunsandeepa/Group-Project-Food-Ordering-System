@@ -2,6 +2,10 @@ import { Product } from "@/types";
 import { ProductActions } from "./ActionColumn";
 import { formatPrice } from "@/utils/helpers";
 import { useNavigate } from "react-router-dom";
+import { useDeleteProduct } from "@/hooks/useDeleteProduct";
+import { useAdminUser } from "@/contexts/AdminUserContext";
+import { useProductContext } from "@/contexts/ProductContext";
+import { toast } from "sonner";
 
 interface ProductRowProps {
   product: Product;
@@ -9,6 +13,9 @@ interface ProductRowProps {
 
 export default function ProductRow({ product }: ProductRowProps) {
   const navigate = useNavigate();
+  const { deleteProduct } = useDeleteProduct();
+  const { admin } = useAdminUser();
+   const { fetchProducts } = useProductContext();
 
   const handleView = () => {
     navigate(`/dashboard/products/${product._id}`);
@@ -17,7 +24,26 @@ export default function ProductRow({ product }: ProductRowProps) {
   navigate(`/dashboard/products/${product._id}/edit`);
 };
 
-  const handleDelete = () => console.log("Delete", product.name);
+const handleDelete = async () => {
+  if (!admin?.isSuper) {
+    alert("Only super admins can delete products.");
+    return;
+  }
+
+  const confirmed = window.confirm(
+    `Are you sure you want to delete "${product.name}"? This action cannot be undone.`
+  );
+  if (!confirmed) return;
+
+  try {
+    await deleteProduct(product._id);
+    toast.success("Product deleted successfully");
+    fetchProducts();
+  } catch (err) {
+    console.error("Failed to delete product:", err);
+    toast.error("Error deleting product");
+  }
+};
 
   return (
     <tr className="border-b border-gray-800 hover:bg-gray-900 transition-colors">

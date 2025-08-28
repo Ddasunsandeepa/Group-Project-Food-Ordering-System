@@ -22,6 +22,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useProductContext } from "@/contexts/ProductContext";
 import { Product } from "@/types";
 import { toast } from "sonner";
+import { Permission, useAdminUser } from "@/contexts/AdminUserContext";
 
 const { CategoryContext } = CategoryModule;
 
@@ -72,6 +73,18 @@ export default function ProductEditPage() {
   const [formData, setFormData] = useState<Product | null>(null);
   const [newImage, setNewImage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+    const { admin } = useAdminUser();
+  
+    const hasPermission = (perm: Permission) => {
+      return admin?.permissions?.includes(perm);
+    };
+  
+    useEffect(() => {
+      if (!hasPermission("write")) {
+        navigate("/");
+        toast.error("You do not have permission to edit products.");
+      }
+    }, [admin, navigate]);
 
   // Load product from context by param
   useEffect(() => {

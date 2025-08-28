@@ -13,6 +13,7 @@ import SettingsPage from "./pages/SettingsPage";
 import Home from "./pages/Home";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import ProductEditPage from "./pages/ProductEditPage";
+import ProductAddPage from "./pages/ProductAddPage";
 
 export const AppRoutes = () => {
   return (
@@ -62,7 +63,16 @@ export const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
-
+            <Route
+        path="/dashboard/products/add"
+        element={
+          <ProtectedRoute>
+            <Dashboard>
+            <ProductAddPage />
+            </Dashboard>
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="/dashboard/categories"
         element={

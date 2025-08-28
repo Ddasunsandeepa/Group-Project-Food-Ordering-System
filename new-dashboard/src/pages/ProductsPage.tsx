@@ -11,16 +11,15 @@ import {
 import { ProductsHeader } from "@/components/products/ProductsHeader";
 import { useProductContext } from "@/contexts/ProductContext";
 import ProductTable from "@/components/products/ProductTable";
+import { useNavigate } from "react-router-dom";
 
 export default function ProductsPage() {
   const { products } = useProductContext();
   const totalProducts = products.length;
-
-  
-
+  const navigate = useNavigate();
 
   const handleAddProduct = () => {
-    console.log("Add Product clicked");
+    navigate("/dashboard/products/add");
   };
 
   return (
