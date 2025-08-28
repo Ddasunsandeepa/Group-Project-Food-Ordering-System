@@ -1,19 +1,33 @@
-import React from "react"
-import { Navigate } from "react-router-dom"
-import { useAdminUser } from "@/contexts/AdminUserContext"
+import { ReactNode, useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
+import { useAdminUser } from "@/contexts/AdminUserContext";
 
-interface ProtectedRouteProps {
-  children: React.ReactNode
+interface Props {
+  children: ReactNode;
 }
 
-export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const { admin } = useAdminUser()
+export const ProtectedRoute = ({ children }: Props) => {
+  const { admin, isAuthenticated } = useAdminUser();
+  const [loading, setLoading] = useState(true);
 
-  if (!admin || !admin.token) {
-    // Not authenticated → redirect to "No Access" page
-    return <Navigate to="/no-access" replace />
+  useEffect(() => {
+    // Wait until the auth state is known
+    setLoading(false);
+  }, [isAuthenticated]);
+
+  if (loading) {
+    return <div className="p-4 text-gray-400">Loading...</div>; // or a spinner
   }
 
-  // Authenticated → render children
-  return <>{children}</>
-}
+  if (!isAuthenticated) {
+    // Not logged in → redirect to login
+    return <Navigate to="/admin-login" replace />;
+  }
+
+  if (!admin?.isSuper) {
+    // Logged in but insufficient permissions
+    return <Navigate to="/" replace />; // or anywhere safe, not /no-access yet
+  }
+
+  return <>{children}</>;
+};

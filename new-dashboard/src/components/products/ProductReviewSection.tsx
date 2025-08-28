@@ -34,7 +34,7 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ product }) 
   }, [product._id]);
 
   return (
-    <div className="w-full mx-auto mt-10 mb-16 px-4">
+    <div className="w-full mx-auto mt-10 mb-16 lg:px-4">
       <Card className="bg-gray-900 border-gray-800 shadow-lg">
         <CardHeader>
           <CardTitle className="text-gray-100 text-xl">

@@ -29,14 +29,16 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { AdminUser, useAdminUser } from "@/contexts/AdminUserContext";
+import { useNavigate } from "react-router-dom";
 
 export function NavUser({ user }: { user: AdminUser }) {
   const { isMobile } = useSidebar();
   const { logout } = useAdminUser();
+  const Navigate = useNavigate();
 
   // Example handlers
   const handleAccountClick = () => {
-    console.log("Account clicked");
+    Navigate("/dashboard/settings");
   };
 
   const handleBillingClick = () => {

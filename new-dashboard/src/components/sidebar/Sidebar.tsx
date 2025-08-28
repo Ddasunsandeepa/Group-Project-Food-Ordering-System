@@ -33,7 +33,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           { title: "Products", url: "/dashboard/products", isActive: false },
           { title: "Categories", url: "/dashboard/categories", isActive: false },
           { title: "Orders", url: "/dashboard/orders", isActive: false },
-          { title: "Reviews", url: "/dashboard/reviews", isActive: false },
+          { title: "Messages", url: "#", isActive: false },
+          { title: "Notifications", url: "#", isActive: false },
           // Only show Admins tab if user is super admin
           ...(admin?.isSuper
             ? [{ title: "Admins", url: "/dashboard/admins", isActive: false }]

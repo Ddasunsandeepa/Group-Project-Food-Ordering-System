@@ -22,6 +22,7 @@ export interface AdminUserContextType {
   login: (admin: AdminUser) => void;
   logout: () => void;
   isAuthenticated: boolean;
+  refetchAdmin : () => Promise<void>; // added
 }
 
 const AdminUserContext = createContext<AdminUserContextType | undefined>(undefined);
@@ -32,18 +33,15 @@ export const AdminUserProvider: React.FC<{ children: ReactNode }> = ({ children 
     const stored = localStorage.getItem("admin");
     if (!stored) return null;
 
-    const parsed: AdminUser = JSON.parse(stored);
-    if (parsed.token) {
-      try {
-        const decoded: JwtPayload = jwtDecode(parsed.token);
-        const now = Date.now() / 1000;
-        if (decoded.exp > now) return parsed; // token still valid
-      } catch {
-        // invalid token
-      }
+    try {
+      const parsed: AdminUser = JSON.parse(stored);
+      const decoded: JwtPayload = jwtDecode(parsed.token);
+      const now = Date.now() / 1000;
+      if (decoded.exp > now) return parsed;
+    } catch {
+      localStorage.removeItem("admin");
     }
 
-    localStorage.removeItem("admin");
     return null;
   });
 
@@ -55,7 +53,7 @@ export const AdminUserProvider: React.FC<{ children: ReactNode }> = ({ children 
   const logout = () => {
     setAdmin(null);
     localStorage.removeItem("admin");
-     navigate("/admin-login");
+    navigate("/admin-login");
   };
 
   const isAuthenticated = !!admin?.token;
@@ -69,7 +67,7 @@ export const AdminUserProvider: React.FC<{ children: ReactNode }> = ({ children 
     try {
       const decoded: JwtPayload = jwtDecode(admin.token);
       const now = Date.now();
-      const expTime = decoded.exp * 1000; // convert seconds → ms
+      const expTime = decoded.exp * 1000;
       const delay = expTime - now;
 
       if (delay <= 0) {
@@ -86,8 +84,32 @@ export const AdminUserProvider: React.FC<{ children: ReactNode }> = ({ children 
     return () => clearTimeout(timeout);
   }, [admin?.token]);
 
+  // Refetch current admin data from backend
+  const refetchAdmin = async () => {
+    if (!admin?.id || !admin.token) return;
+
+    try {
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/admin/${admin.id}`, {
+        headers: { Authorization: `Bearer ${admin.token}` },
+      });
+      const data = await res.json();
+      if (res.ok && data.status && data.admin) {
+        const updatedAdmin: AdminUser = {
+          ...data.admin,
+          token: admin.token, // keep current token
+        };
+        setAdmin(updatedAdmin);
+        localStorage.setItem("admin", JSON.stringify(updatedAdmin));
+      } else {
+        console.warn("Failed to refetch admin:", data.msg);
+      }
+    } catch (err) {
+      console.error("Error refetching admin:", err);
+    }
+  };
+
   return (
-    <AdminUserContext.Provider value={{ admin, login, logout, isAuthenticated }}>
+    <AdminUserContext.Provider value={{ admin, login, logout, isAuthenticated, refetchAdmin }}>
       {children}
     </AdminUserContext.Provider>
   );
