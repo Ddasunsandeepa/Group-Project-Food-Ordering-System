@@ -12,6 +12,7 @@ import AdminsPage from "./pages/AdminsPage";
 import SettingsPage from "./pages/SettingsPage";
 import Home from "./pages/Home";
 import ProductDetailPage from "./pages/ProductDetailPage";
+import ProductEditPage from "./pages/ProductEditPage";
 
 export const AppRoutes = () => {
   return (
@@ -47,6 +48,16 @@ export const AppRoutes = () => {
           <ProtectedRoute>
             <Dashboard>
               <ProductDetailPage />
+            </Dashboard>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/dashboard/products/:id/edit"
+        element={
+          <ProtectedRoute>
+            <Dashboard>
+            <ProductEditPage />
             </Dashboard>
           </ProtectedRoute>
         }

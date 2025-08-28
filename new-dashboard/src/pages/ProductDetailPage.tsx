@@ -26,6 +26,7 @@ import { Product } from "@/types";
 import { formatPrice } from "@/utils/helpers";
 import RenderStars from "@/utils/RenderStars";
 import { ProductDetailActions } from "@/components/products/ViewActionBar";
+import ProductReviewSection from "@/components/products/ProductReviewSection";
 
 export default function ProductDetailPage() {
   const { id } = useParams();
@@ -236,6 +237,7 @@ export function ProductDetails({
           <ProductDetailActions onEdit={onEdit} onDelete={onDelete} />
         </div>
       </div>
+      <ProductReviewSection product={product} />
     </div>
   );
 }

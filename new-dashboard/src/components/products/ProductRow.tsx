@@ -9,11 +9,14 @@ interface ProductRowProps {
 
 export default function ProductRow({ product }: ProductRowProps) {
   const navigate = useNavigate();
-  
+
   const handleView = () => {
     navigate(`/dashboard/products/${product._id}`);
   };
-  const handleEdit = () => console.log("Edit", product.name);
+  const handleEdit = () => {
+  navigate(`/dashboard/products/${product._id}/edit`);
+};
+
   const handleDelete = () => console.log("Delete", product.name);
 
   return (
