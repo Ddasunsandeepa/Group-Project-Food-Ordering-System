@@ -3,7 +3,7 @@ import { StatsCard } from "./StatsCard";
 
 export default function SectionCards() {
   return (
-    <div className="w-[80%] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+    <div className="w-full lg:w-[80%] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
       <StatsCard
         title="Total Revenue"
         value="$1,250.00"
