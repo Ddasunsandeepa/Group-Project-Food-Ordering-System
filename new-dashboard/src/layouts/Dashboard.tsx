@@ -1,25 +1,31 @@
-// import Header from "@/components/Header";
-// import ProfileMenu from "@/components/ProfileMenu";
-import Sidebar from "@/components/sidebar/Sidebar";
-import { Outlet } from "react-router-dom"; // Import Outlet from react-router-dom
+import { ReactNode } from "react";
+import { Outlet } from "react-router-dom"; // Make sure you import Outlet
+import { AppSidebar } from "@/components/sidebar/Sidebar";
+import { Separator } from "@/components/ui/separator";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 
 type Props = {
-  children?: React.ReactNode; // Make children optional for flexibility
-}
+  children?: ReactNode; // optional children
+};
 
-const Dashboard = ({ children }: Props) => {
+export default function Page({ children }: Props) {
   return (
-    <div className="flex min-h-screen">
-      <Sidebar />
-      
-      <div className="flex-grow transition-all duration-300 ${isSidebarVisible ? 'ml-[345px]' : 'ml-0'}">
-        {/* <Header><ProfileMenu /></Header> */}
-        <div className="container mx-auto flex-1 p-16">
-          {children || <Outlet />} {/* Render children or Outlet for nested routes */}
-        </div>
-      </div>
-    </div>
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+          <SidebarTrigger className="-ml-1" />
+          <Separator
+            orientation="vertical"
+            className="mr-2 data-[orientation=vertical]:h-4"
+          />
+        </header>
+        {children || <Outlet />} {/* Render children or Outlet for nested routes */}
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
-
-export default Dashboard;

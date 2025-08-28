@@ -1,51 +1,80 @@
-import { FC } from "react";
+import * as React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Home, Package, Tag, ShoppingCart, Star, User, Cog } from "lucide-react";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarRail,
+} from "@/components/ui/sidebar";
+import { NavUser } from "./SidebarUser";
+import { useAdminUser } from "@/contexts/AdminUserContext";
 
-interface SideBarTabProps {
-  to: string;
-  icon: JSX.Element;
-  label: string;
-}
+// Navigation structure matching your routes
+const data = {
+  navMain: [
+    {
+      title: "Dashboard",
+      items: [{ title: "Home", url: "/", isActive: false }],
+    },
+    {
+      title: "Management",
+      items: [
+        { title: "Products", url: "/dashboard/products", isActive: false },
+        { title: "Categories", url: "/dashboard/categories", isActive: false },
+        { title: "Orders", url: "/dashboard/orders", isActive: false },
+        { title: "Reviews", url: "/dashboard/reviews", isActive: false },
+        { title: "Admins", url: "/dashboard/admins", isActive: false },
+      ],
+    },
+    {
+      title: "Settings",
+      items: [
+        { title: "Settings", url: "/dashboard/settings", isActive: false },
+      ],
+    },
+  ],
+};
 
-const SideBarTab: FC<SideBarTabProps> = ({ to, icon, label }) => {
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const location = useLocation();
-  const isActive = location.pathname === to;
+  const { admin } = useAdminUser();
 
   return (
-    <Link
-      to={to}
-      className={`flex items-center gap-4 px-6 py-3 rounded-lg transition-colors text-gray-300 hover:bg-gray-800 hover:text-white ${
-        isActive ? "bg-gray-900 text-white font-semibold" : ""
-      }`}
-    >
-      {icon}
-      <span>{label}</span>
-    </Link>
+    <Sidebar {...props}>
+      <SidebarHeader>
+        <h2 className="text-lg font-bold px-4 py-2">Admin Panel</h2>
+      </SidebarHeader>
+
+      <SidebarContent>
+        {data.navMain.map((group) => (
+          <SidebarGroup key={group.title}>
+            <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {group.items.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={location.pathname === item.url}
+                    >
+                      <Link to={item.url}>{item.title}</Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
+      </SidebarContent>
+      <SidebarFooter className="pb-5">{admin && <NavUser user={admin} />}</SidebarFooter>
+      <SidebarRail />
+    </Sidebar>
   );
-};
-
-const SideBar: FC<{ isSidebarVisible?: boolean }> = ({ isSidebarVisible = true }) => {
-  if (!isSidebarVisible) return null;
-
-  return (
-    <aside className="sticky top-0 left-0 h-screen w-72 bg-gray-900 text-gray-300 shadow-xl flex flex-col p-6 gap-6">
-      <div className="flex items-center gap-2 mb-10">
-        <Home className="w-8 h-8 text-white" />
-        <span className="text-2xl font-bold text-white">TasteNest Admin</span>
-      </div>
-
-      <nav className="flex flex-col gap-2">
-        <SideBarTab to="/dashboard" icon={<Home className="w-5 h-5" />} label="Dashboard" />
-        <SideBarTab to="/dashboard/products" icon={<Package className="w-5 h-5" />} label="Products" />
-        <SideBarTab to="/dashboard/categories" icon={<Tag className="w-5 h-5" />} label="Categories" />
-        <SideBarTab to="/dashboard/orders" icon={<ShoppingCart className="w-5 h-5" />} label="Orders" />
-        <SideBarTab to="/dashboard/reviews" icon={<Star className="w-5 h-5" />} label="Reviews" />
-        <SideBarTab to="/dashboard/admins" icon={<User className="w-5 h-5" />} label="Admins" />
-        <SideBarTab to="/dashboard/settings" icon={<Cog className="w-5 h-5" />} label="Settings" />
-      </nav>
-    </aside>
-  );
-};
-
-export default SideBar;
+}
