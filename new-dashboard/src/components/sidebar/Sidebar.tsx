@@ -16,42 +16,44 @@ import {
 import { NavUser } from "./SidebarUser";
 import { useAdminUser } from "@/contexts/AdminUserContext";
 
-// Navigation structure matching your routes
-const data = {
-  navMain: [
-    {
-      title: "Dashboard",
-      items: [{ title: "Home", url: "/", isActive: false }],
-    },
-    {
-      title: "Management",
-      items: [
-        { title: "Products", url: "/dashboard/products", isActive: false },
-        { title: "Categories", url: "/dashboard/categories", isActive: false },
-        { title: "Orders", url: "/dashboard/orders", isActive: false },
-        { title: "Reviews", url: "/dashboard/reviews", isActive: false },
-        { title: "Admins", url: "/dashboard/admins", isActive: false },
-      ],
-    },
-    {
-      title: "Settings",
-      items: [
-        { title: "Settings", url: "/dashboard/settings", isActive: false },
-      ],
-    },
-  ],
-};
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const location = useLocation();
   const { admin } = useAdminUser();
+
+  // Navigation structure matching your routes
+  const data = {
+    navMain: [
+      {
+        title: "Dashboard",
+        items: [{ title: "Home", url: "/", isActive: false }],
+      },
+      {
+        title: "Management",
+        items: [
+          { title: "Products", url: "/dashboard/products", isActive: false },
+          { title: "Categories", url: "/dashboard/categories", isActive: false },
+          { title: "Orders", url: "/dashboard/orders", isActive: false },
+          { title: "Reviews", url: "/dashboard/reviews", isActive: false },
+          // Only show Admins tab if user is super admin
+          ...(admin?.isSuper
+            ? [{ title: "Admins", url: "/dashboard/admins", isActive: false }]
+            : []),
+        ],
+      },
+      {
+        title: "Settings",
+        items: [
+          { title: "Settings", url: "/dashboard/settings", isActive: false },
+        ],
+      },
+    ],
+  };
 
   return (
     <Sidebar {...props}>
       <SidebarHeader>
         <h2 className="text-lg font-bold px-4 py-2">Admin Panel</h2>
       </SidebarHeader>
-
       <SidebarContent>
         {data.navMain.map((group) => (
           <SidebarGroup key={group.title}>
@@ -73,7 +75,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroup>
         ))}
       </SidebarContent>
-      <SidebarFooter className="pb-5">{admin && <NavUser user={admin} />}</SidebarFooter>
+      <SidebarFooter className="pb-5">
+        {admin && <NavUser user={admin} />}
+      </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );
