@@ -10,6 +10,7 @@ import OrdersPage from "./pages/OrdersPage";
 import ReviewsPage from "./pages/ReviewsPage";
 import AdminsPage from "./pages/AdminsPage";
 import SettingsPage from "./pages/SettingsPage";
+import Home from "./pages/Home";
 
 export const AppRoutes = () => {
   return (
@@ -24,7 +25,7 @@ export const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <Dashboard>
-              <div>Home</div>
+              <Home />
             </Dashboard>
           </ProtectedRoute>
         }
