@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAdminUser } from "@/contexts/AdminUserContext";
+import { AdminUser, useAdminUser } from "@/contexts/AdminUserContext";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -14,18 +14,13 @@ import {
 import { toast } from "sonner";
 import { SuperAdminWelcomeBanner } from "@/components/admins/WelcomeBanner";
 import { AdminDashboardCards } from "@/components/admins/AdminDashboardCards";
+import AdminTable from "@/components/admins/AdminTable";
 
-interface Admin {
-  _id: string;
-  name: string;
-  permissions: string[];
-  isSuper: boolean;
-}
 
 export default function AdminPage() {
   const { admin } = useAdminUser();
   const navigate = useNavigate();
-  const [admins, setAdmins] = useState<Admin[]>([]);
+  const [admins, setAdmins] = useState<AdminUser[]>([]);
   const [stats, setStats] = useState({ totalManagers: 0, totalViewers: 0 });
 
   useEffect(() => {
@@ -43,16 +38,16 @@ export default function AdminPage() {
 
         if (data.status) {
           // Exclude super admins
-          const nonSuperAdmins = data.admins.filter((a: Admin) => !a.isSuper);
+          const nonSuperAdmins = data.admins.filter((a: AdminUser) => !a.isSuper);
           setAdmins(nonSuperAdmins);
 
           // Managers: anyone with "write" or "manager" permission
-          const totalManagers = nonSuperAdmins.filter((a: Admin) =>
+          const totalManagers = nonSuperAdmins.filter((a: AdminUser) =>
             a.permissions.some((p) => p === "write" || p === "super")
           ).length;
 
           // View-only: anyone with only "view" permission
-          const totalViewers = nonSuperAdmins.filter((a: Admin) =>
+          const totalViewers = nonSuperAdmins.filter((a: AdminUser) =>
             a.permissions.every((p) => p === "view")
           ).length;
 
@@ -72,6 +67,31 @@ export default function AdminPage() {
   if (!admin?.isSuper) {
     return null;
   }
+
+const handleDeleteAdmin = async (id: string) => {
+  if (!window.confirm("Are you sure you want to delete this admin?")) return;
+
+  try {
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/admin/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${admin.token}`,
+      },
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.msg || "Failed to delete admin");
+
+    toast.success("Admin deleted successfully");
+
+    // Refresh admins list
+    setAdmins((prev) => prev.filter((a) => a.id !== id));
+  } catch (err) {
+    toast.error("Something went wrong");
+    console.error(err);
+  }
+};
 
   return (
     <div className="p-6 bg-background min-h-screen text-foreground">
@@ -93,10 +113,8 @@ export default function AdminPage() {
         onAddAdmin={() => navigate("/dashboard/admins/add")}
       />
 
-      {/* Optional: List all admins */}
-      {admins.map((a) => (
-        <div key={a._id}>{a.name}</div>
-      ))}
+      <AdminTable admins={admins} onDelete={handleDeleteAdmin} />
+
     </div>
   );
 }

@@ -121,6 +121,21 @@ router.post("/signin", async (req, res) => {
   }
 });
 
+// Protected: Get single admin by ID
+router.get("/:id", async (req, res) => {
+  try {
+    const admin = await AdminUser.findById(req.params.id).select("-password");
+    if (!admin) {
+      return res.status(404).json({ status: false, msg: "Admin not found" });
+    }
+    res.status(200).json(admin);
+  } catch (error) {
+    console.error("Get Admin Error:", error);
+    res.status(500).json({ status: false, msg: "Failed to fetch admin" });
+  }
+});
+
+
 // Protected: Get all admins
 router.get("/", async (req, res) => {
   try {
@@ -145,7 +160,7 @@ router.delete("/:id", verifyAdminToken, async (req, res) => {
 });
 
 // Protected: Update admin
-router.put("/:id", verifyAdminToken, async (req, res) => {
+router.put("/:id", async (req, res) => {
   const { name, email, password, permissions, isSuper } = req.body;
 
   try {

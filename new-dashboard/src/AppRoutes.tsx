@@ -16,6 +16,8 @@ import ProductEditPage from "./pages/ProductEditPage";
 import ProductAddPage from "./pages/ProductAddPage";
 import CategoryEditPage from "./pages/CategoryEditPage";
 import CategoryAddPage from "./pages/CategoryAddPage";
+import AddAdminPage from "./pages/AddAdminPage";
+import EditAdminpage from "./pages/EditAdminpage";
 
 export const AppRoutes = () => {
   return (
@@ -95,12 +97,12 @@ export const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
-             <Route
+      <Route
         path="/dashboard/categories/add"
         element={
           <ProtectedRoute>
             <Dashboard>
-            <CategoryAddPage />
+              <CategoryAddPage />
             </Dashboard>
           </ProtectedRoute>
         }
@@ -131,6 +133,26 @@ export const AppRoutes = () => {
           <ProtectedRoute>
             <Dashboard>
               <AdminsPage />
+            </Dashboard>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/dashboard/admins/:id/edit"
+        element={
+          <ProtectedRoute>
+            <Dashboard>
+              <EditAdminpage />
+            </Dashboard>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/dashboard/admins/add"
+        element={
+          <ProtectedRoute>
+            <Dashboard>
+              <AddAdminPage />
             </Dashboard>
           </ProtectedRoute>
         }
