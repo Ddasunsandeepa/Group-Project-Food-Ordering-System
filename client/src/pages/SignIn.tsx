@@ -12,6 +12,8 @@ import { Link } from "react-router-dom";
 import AuthDivider from "../components/Auth/AuthDivider";
 import { User } from "../types";
 import { useCart } from "../contexts/CartContext";
+import { signInWithPopup } from "firebase/auth";
+import { auth, provider } from "../firebase";
 
 const SignIn = () => {
   const [email, setEmail] = useState<string>("");
@@ -106,12 +108,23 @@ const SignIn = () => {
     }
   };
 
+  const handleGoogleLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      console.log("User Info:", user);
+      // you can send user info (email, uid, token) to your backend here
+    } catch (error) {
+      console.error("Google Login Error:", error);
+    }
+  };
+
   return (
     <Auth title="Sign In" classname={"w-[90%] md:w-[60%] lg:w-[32%] "}>
       <div className="space-y-4 ">
         {/* Google Sign In */}
         <GoogleSignInButton
-          onClick={() => console.log("Google sign in clicked")}
+          onClick={handleGoogleLogin}
           buttonRef={googleButtonRef}
         />
 
