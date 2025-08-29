@@ -7,6 +7,7 @@ import { Button } from "../ui/button";
 import { deleteData } from "@/api/Api";
 import { toast } from "sonner";
 import RenderStars from "../Commons/RenderStars";
+import { formatPrice } from "@/utils/helpers";
 // import { useUser } from "../../contexts/UserContext";
 
 interface ProductCardProps {
@@ -110,11 +111,11 @@ const WishListItem: React.FC<ProductCardProps> = ({
               <div className="flex items-center gap-2">
                 {product.oldPrice && (
                   <span className="text-gray-400 text-lg line-through">
-                    ${product.oldPrice}
+                 {formatPrice(product.oldPrice)}
                   </span>
                 )}
-                <span className="text-red-500 text-xl font-bold">
-                  ${product.price}
+                <span className="text-red-500 text-base font-bold">
+                  {formatPrice(product.price)}
                 </span>
               </div>
               <Button
