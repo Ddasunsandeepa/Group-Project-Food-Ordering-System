@@ -5,7 +5,7 @@ import CartItemCard from "@/components/Cart/CartItemCard";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
-import { Trash2 } from "lucide-react";
+import { AlertCircle, Trash2 } from "lucide-react";
 import { loadStripe } from "@stripe/stripe-js";
 
 const ShoppingCartComponent: React.FC = () => {
@@ -68,7 +68,14 @@ const ShoppingCartComponent: React.FC = () => {
       }
     } catch (error) {
       console.error("Checkout error:", error);
-      toast.error("Checkout failed. Try again later!");
+      toast.error(
+        <div className="flex items-center gap-3">
+          <AlertCircle className="text-red-600 w-5 h-5" />
+          <span className="text-black font-semibold">
+            Something went wrong during checkout.
+          </span>
+        </div>
+      );
       setLoading(false);
     }
   };

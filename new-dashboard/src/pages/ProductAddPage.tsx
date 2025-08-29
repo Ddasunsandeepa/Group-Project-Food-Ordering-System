@@ -153,6 +153,20 @@ export default function ProductAddPage() {
     }
   };
 
+  const handleAddSize = (size: string) => {
+    setFormData((prev) => {
+      if (prev.size.includes(size)) return prev;
+      return { ...prev, size: [...prev.size, size] };
+    });
+  };
+
+  const handleRemoveSize = (size: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      size: prev.size.filter((s) => s !== size),
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -287,6 +301,48 @@ export default function ProductAddPage() {
                   </select>
                 </div>
               </div>
+            </CardContent>
+          </Card>
+          {/* Portion Sizes */}
+          <Card className="bg-gray-900 border-gray-800">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg text-white flex items-center gap-2">
+                Portion Sizes
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex gap-2">
+                {["Small", "Medium", "Large"].map((size) => (
+                  <Button
+                    key={size}
+                    type="button"
+                    onClick={() => handleAddSize(size)}
+                    disabled={formData.size.includes(size)}
+                    className="bg-gray-700 text-white hover:bg-gray-600"
+                  >
+                    {size}
+                  </Button>
+                ))}
+              </div>
+              {formData.size.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {formData.size.map((s) => (
+                    <Badge
+                      key={s}
+                      className="bg-orange-400 text-white flex items-center gap-1"
+                    >
+                      {s}
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveSize(s)}
+                        className="ml-1"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
 

@@ -73,18 +73,18 @@ export default function ProductEditPage() {
   const [formData, setFormData] = useState<Product | null>(null);
   const [newImage, setNewImage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-    const { admin } = useAdminUser();
-  
-    const hasPermission = (perm: Permission) => {
-      return admin?.permissions?.includes(perm);
-    };
-  
-    useEffect(() => {
-      if (!hasPermission("write")) {
-        navigate("/");
-        toast.error("You do not have permission to edit products.");
-      }
-    }, [admin, navigate]);
+  const { admin } = useAdminUser();
+
+  const hasPermission = (perm: Permission) => {
+    return admin?.permissions?.includes(perm);
+  };
+
+  useEffect(() => {
+    if (!hasPermission("write")) {
+      navigate("/");
+      toast.error("You do not have permission to edit products.");
+    }
+  }, [admin, navigate]);
 
   // Load product from context by param
   useEffect(() => {
@@ -125,6 +125,20 @@ export default function ProductEditPage() {
         images: formData.images.filter((_, i) => i !== index),
       });
     }
+  };
+
+  const handleAddSize = (size: string) => {
+    if (!formData) return;
+    if (formData.size.includes(size)) return;
+    setFormData({ ...formData, size: [...formData.size, size] });
+  };
+
+  const handleRemoveSize = (size: string) => {
+    if (!formData) return;
+    setFormData({
+      ...formData,
+      size: formData.size.filter((s) => s !== size),
+    });
   };
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -261,6 +275,49 @@ export default function ProductEditPage() {
                   </select>
                 </div>
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Portion Sizes */}
+          <Card className="bg-gray-900 text-white border-gray-800">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg text-white flex items-center gap-2">
+                Portion Sizes
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex gap-2">
+                {["Small", "Medium", "Large"].map((size) => (
+                  <Button
+                    key={size}
+                    type="button"
+                    onClick={() => handleAddSize(size)}
+                    disabled={formData.size.includes(size)}
+                    className="bg-gray-700 text-white hover:bg-gray-600"
+                  >
+                    {size}
+                  </Button>
+                ))}
+              </div>
+              {formData.size.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {formData.size.map((s) => (
+                    <Badge
+                      key={s}
+                      className="bg-orange-400 text-white flex items-center gap-1"
+                    >
+                      {s}
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveSize(s)}
+                        className="ml-1"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
 
