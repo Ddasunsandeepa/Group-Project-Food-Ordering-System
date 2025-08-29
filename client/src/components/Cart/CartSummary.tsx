@@ -1,11 +1,12 @@
 import React from "react";
-import { Package } from "lucide-react";
+import { Loader2, Package } from "lucide-react";
 import { formatPrice } from "@/utils/helpers";
 
 interface CartSummaryProps {
   subTotal: number;
   shippingCost?: number;
   location?: string;
+  loading?: boolean;
   onCheckout: () => void;
   isCartEmpty?: boolean;
 }
@@ -14,6 +15,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   subTotal,
   shippingCost = 20,
   location = "Colombo",
+  loading = false,
   onCheckout,
   isCartEmpty = false,
 }) => {
@@ -26,7 +28,9 @@ const CartSummary: React.FC<CartSummaryProps> = ({
       <div className="space-y-4 mb-6">
         <div className="flex justify-between">
           <span className="text-gray-600">SubTotal</span>
-          <span className="text-green-600 font-semibold">{formatPrice(subTotal)}</span>
+          <span className="text-green-600 font-semibold">
+            {formatPrice(subTotal)}
+          </span>
         </div>
 
         <div className="flex justify-between">
@@ -49,15 +53,49 @@ const CartSummary: React.FC<CartSummaryProps> = ({
 
       <button
         onClick={onCheckout}
-        disabled={isCartEmpty}
+        disabled={isCartEmpty || loading}
         className={`w-full py-3 px-4 rounded-lg font-semibold transition-colors duration-200 flex items-center justify-center gap-2
-          ${isCartEmpty
-            ? "bg-gray-300 text-gray-700"
-            : "bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white"}
-        `}
+          ${
+            isCartEmpty || loading
+              ? "bg-gray-300 text-gray-700"
+              : "bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white"
+          }
+
+
+  `}
       >
-        <Package className="w-5 h-5" />
-        Proceed To Checkout
+        {loading ? (
+
+
+
+          <>
+
+
+            <Loader2 className="w-5 h-5 animate-spin" />
+
+
+            Processing...
+
+
+          </>
+
+
+        ) : (
+
+
+          <>
+
+
+            <Package className="w-5 h-5" />
+
+
+            Proceed To Checkout
+
+
+          </>
+
+
+        )}
       </button>
     </div>
   );

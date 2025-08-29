@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import CartSummary from "@/components/Cart/CartSummary";
 import EmptyCartMessage from "@/components/Cart/EmptyCartMessage";
 import CartItemCard from "@/components/Cart/CartItemCard";
@@ -6,14 +6,85 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
+import { loadStripe } from "@stripe/stripe-js";
 
 const ShoppingCartComponent: React.FC = () => {
   const navigate = useNavigate();
   const { cartItems, cartTotal, updateQuantity, removeFromCart } = useCart();
+  const [loading, setLoading] = useState(false);
 
-  const handleProceedToCheckout = () => {
-    console.log("Proceeding to checkout...");
-    alert("Proceeding to checkout!");
+  const handleProceedToCheckout = async () => {
+    try {
+      setLoading(true);
+      const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLISH_KEY);
+
+      if (!stripe) {
+        toast.error("Stripe failed to load");
+        setLoading(false);
+
+        return;
+      }
+
+      // Transform cart items for backend
+
+      const cartProducts = cartItems.map((item) => ({
+        productTitle: item.productTitle,
+
+        images: item.images,
+
+        price: item.price,
+
+        quantity: item.quantity,
+      }));
+
+      const userData = JSON.parse(localStorage.getItem("user") || "{}");
+
+      if (!userData?._id) {
+        toast.error("Please log in before checkout");
+        setLoading(false);
+
+        return;
+      }
+
+      const body = {
+        products: cartProducts,
+
+        userId: userData._id,
+      };
+
+      const response = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/api/checkout`,
+
+        {
+          method: "POST",
+
+          headers: { "Content-Type": "application/json" },
+
+          body: JSON.stringify(body),
+        }
+      );
+
+      const responseBody = await response.json();
+
+      if (!response.ok || !responseBody.id) {
+        throw new Error("Failed to create checkout session");
+      }
+
+      // Redirect to Stripe Checkout
+
+      const result = await stripe.redirectToCheckout({
+        sessionId: responseBody.id,
+      });
+
+      if (result.error) {
+        setLoading(false);
+        toast.error(result.error.message);
+      }
+    } catch (error) {
+      console.error("Checkout error:", error);
+      setLoading(false);
+      toast.error("Checkout failed. Try again later!");
+    }
   };
 
   const handleGoShopping = () => {
@@ -104,6 +175,7 @@ const ShoppingCartComponent: React.FC = () => {
             <CartSummary
               subTotal={cartTotal}
               onCheckout={handleProceedToCheckout}
+              loading={loading}
               isCartEmpty={isCartEmpty}
             />
           </div>
