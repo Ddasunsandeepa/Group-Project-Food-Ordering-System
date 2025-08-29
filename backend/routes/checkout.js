@@ -15,7 +15,7 @@ router.post("/", async (req, res) => {
 
   const lineItems = products.map((product) => ({
     price_data: {
-      currency: "USD",
+      currency: "lkr",
       product_data: {
         name: product.productTitle?.substr(0, 30) + "...",
         images: [product.images],

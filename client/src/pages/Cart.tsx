@@ -6,14 +6,65 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
+import { loadStripe } from "@stripe/stripe-js";
 
 const ShoppingCartComponent: React.FC = () => {
   const navigate = useNavigate();
   const { cartItems, cartTotal, updateQuantity, removeFromCart } = useCart();
 
-  const handleProceedToCheckout = () => {
-    console.log("Proceeding to checkout...");
-    alert("Proceeding to checkout!");
+  const handleProceedToCheckout = async () => {
+    try {
+      const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLISH_KEY);
+      if (!stripe) {
+        toast.error("Stripe failed to load");
+        return;
+      }
+
+      // Transform cart items for backend
+      const cartProducts = cartItems.map((item) => ({
+        productTitle: item.productTitle,
+        images: item.images,
+        price: item.price,
+        quantity: item.quantity,
+      }));
+
+      const userData = JSON.parse(localStorage.getItem("user") || "{}");
+      if (!userData?._id) {
+        toast.error("Please log in before checkout");
+        return;
+      }
+
+      const body = {
+        products: cartProducts,
+        userId: userData._id,
+      };
+
+      const response = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/api/checkout`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        }
+      );
+
+      const responseBody = await response.json();
+      if (!response.ok || !responseBody.id) {
+        throw new Error("Failed to create checkout session");
+      }
+
+      // Redirect to Stripe Checkout
+      const result = await stripe.redirectToCheckout({
+        sessionId: responseBody.id,
+      });
+
+      if (result.error) {
+        toast.error(result.error.message);
+      }
+    } catch (error) {
+      console.error("Checkout error:", error);
+      toast.error("Checkout failed. Try again later!");
+    }
   };
 
   const handleGoShopping = () => {
