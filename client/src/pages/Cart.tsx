@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import CartSummary from "@/components/Cart/CartSummary";
 import EmptyCartMessage from "@/components/Cart/EmptyCartMessage";
 import CartItemCard from "@/components/Cart/CartItemCard";
@@ -11,12 +11,15 @@ import { loadStripe } from "@stripe/stripe-js";
 const ShoppingCartComponent: React.FC = () => {
   const navigate = useNavigate();
   const { cartItems, cartTotal, updateQuantity, removeFromCart } = useCart();
+  const [loading, setLoading] = useState(false);
 
   const handleProceedToCheckout = async () => {
     try {
+      setLoading(true);
       const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLISH_KEY);
       if (!stripe) {
         toast.error("Stripe failed to load");
+        setLoading(false);
         return;
       }
 
@@ -31,6 +34,7 @@ const ShoppingCartComponent: React.FC = () => {
       const userData = JSON.parse(localStorage.getItem("user") || "{}");
       if (!userData?._id) {
         toast.error("Please log in before checkout");
+        setLoading(false);
         return;
       }
 
@@ -59,11 +63,13 @@ const ShoppingCartComponent: React.FC = () => {
       });
 
       if (result.error) {
+        setLoading(false);
         toast.error(result.error.message);
       }
     } catch (error) {
       console.error("Checkout error:", error);
       toast.error("Checkout failed. Try again later!");
+      setLoading(false);
     }
   };
 
@@ -156,6 +162,7 @@ const ShoppingCartComponent: React.FC = () => {
               subTotal={cartTotal}
               onCheckout={handleProceedToCheckout}
               isCartEmpty={isCartEmpty}
+              loading={loading}
             />
           </div>
         </div>
