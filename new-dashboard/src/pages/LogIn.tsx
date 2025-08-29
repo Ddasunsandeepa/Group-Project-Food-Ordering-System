@@ -1,34 +1,36 @@
-import { useState, FormEvent } from "react"
-import { useNavigate } from "react-router-dom"
-import { GalleryVerticalEnd } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { cn } from "@/lib/utils"
-import { useAdminUser } from "@/contexts/AdminUserContext"
+import { useState, FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
+import { useAdminUser } from "@/contexts/AdminUserContext";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState<string | null>(null)
-  const [successMsg, setSuccessMsg] = useState<string | null>(null)
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
-  const { login } = useAdminUser()
-  const navigate = useNavigate()
+  const { login } = useAdminUser();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault()
-    setError(null)
-    setSuccessMsg(null)
+    e.preventDefault();
+    setError(null);
+    setSuccessMsg(null);
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/admin/signin`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      })
+      const res = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/api/admin/signin`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
-      const data = await res.json()
+      const data = await res.json();
 
       if (data.status) {
         login({
@@ -38,29 +40,33 @@ export default function LoginPage() {
           permissions: data.admin.permissions,
           isSuper: data.admin.isSuper,
           token: data.token,
-        })
-        setSuccessMsg(`Welcome Back ${data.admin.name}`)
+        });
+        setSuccessMsg(`Welcome Back ${data.admin.name}`);
 
         // Redirect after 300ms
         setTimeout(() => {
-          navigate("/")
-        }, 300)
+          navigate("/");
+        }, 300);
       } else {
-        setError(data.msg || "Login failed")
+        setError(data.msg || "Login failed");
       }
     } catch (err) {
-      setError("Server error. Please try again.")
-      console.error("Server error:", err)
+      setError("Server error. Please try again.");
+      console.error("Server error:", err);
     }
-  }
+  };
 
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-10">
         <div className="flex justify-center gap-2 md:justify-start">
-          <a href="#" className="flex items-center gap-2 font-medium">
-            <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
-              <GalleryVerticalEnd className="size-4" />
+          <a href="#" className="flex items-center gap-2 font-semibold text-lg">
+            <div className="bg-primary text-primary-foreground flex size-10 items-center justify-center rounded-md">
+              <img
+                src="/chrome-512x512.png"
+                alt="Logo"
+                className="size-10 object-contain"
+              />
             </div>
             TasteNest
           </a>
@@ -113,14 +119,14 @@ export default function LoginPage() {
               {/* Error Message */}
               {error && (
                 <div className="border border-red-300 rounded-md p-3">
-                  <p className="text-red-300 text-sm">{error}</p>
+                  <p className="text-red-300 text-sm font-light">{error}</p>
                 </div>
               )}
 
               {/* Success login Message */}
               {successMsg && (
                 <div className="border border-green-200 rounded-md p-3">
-                  <p className="text-green-200 text-sm">{successMsg}</p>
+                  <p className="text-green-200 text-sm font-light">{successMsg}</p>
                 </div>
               )}
 
@@ -139,5 +145,5 @@ export default function LoginPage() {
         />
       </div>
     </div>
-  )
+  );
 }
