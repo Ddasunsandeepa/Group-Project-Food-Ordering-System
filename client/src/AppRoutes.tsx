@@ -13,6 +13,7 @@ import Product from './pages/Product';
 import ShoppingCartComponent from './pages/Cart';
 import ProductLayout from './layouts/ProductLayout';
 import ContactPage from './pages/Contacts';
+import Orders from './pages/Orders';
 
 
 export const AppRoutes = () => {
@@ -28,6 +29,7 @@ export const AppRoutes = () => {
       <Route path="/cart" element={<MainLayout ><ShoppingCartComponent /></MainLayout>}/>
       <Route path="/sign-in" element={<AuthLayout ><SignIn /></AuthLayout>}/>
       <Route path="/sign-up" element={<AuthLayout ><SignUp /></AuthLayout>}/>
+      <Route path="/orders" element={<Orders />}/>
     </Routes>
   );
 };
