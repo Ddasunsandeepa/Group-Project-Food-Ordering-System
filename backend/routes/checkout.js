@@ -15,7 +15,7 @@ router.post("/", async (req, res) => {
 
   const lineItems = products.map((product) => ({
     price_data: {
-      currency: "USD",
+      currency: "lkr",
       product_data: {
         name: product.productTitle?.substr(0, 30) + "...",
         images: [product.images],
@@ -41,8 +41,8 @@ router.post("/", async (req, res) => {
     shipping_address_collection: {
       allowed_countries: ["US", "LK"],
     },
-    success_url: `${process.env.CLIENT_BASE_URL}/payment/complete`,
-    cancel_url: `${process.env.CLIENT_BASE_URL}/cancel`,
+    success_url: `${process.env.CLIENT_BASE_URL}/`,
+    cancel_url: `${process.env.CLIENT_BASE_URL}/`,
   });
 
   res.json({ id: session.id });

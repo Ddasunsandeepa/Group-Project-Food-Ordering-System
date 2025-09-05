@@ -22,7 +22,9 @@ app.use(express.json());
 
 //Routes
 const userRoutes = require("./routes/user.js");
+const adminUserRoutes = require("./routes/adminUser.js");
 const categoryRoutes = require("./routes/categories");
+const orders = require("./routes/orders.js");
 const productRoutes = require("./routes/product");
 const cart = require("./routes/cart.js");
 const productReviews = require("./routes/productReview.js");
@@ -33,10 +35,12 @@ app.use(`/uploads`, express.static("uploads"));
 app.use(`/api/category`, categoryRoutes);
 app.use(`/api/products`, productRoutes);
 app.use(`/api/user`, userRoutes);
+app.use(`/api/admin`, adminUserRoutes);
 app.use(`/api/cart`, cart);
 app.use(`/api/productReviews`, productReviews);
 app.use(`/api/myList`, myList);
 app.use(`/api/checkout`, checkout);
+app.use(`/api/orders`, orders);
 
 // Connect to MongoDB
 mongoose
@@ -47,7 +51,6 @@ mongoose
   .then(() => {
     console.log("MongoDB connected successfully");
     //server
-
     app.listen(process.env.PORT, () => {
       console.log(`server is running http://localhost:${process.env.PORT}`);
     });
