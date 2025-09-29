@@ -146,7 +146,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Protected: Delete admin
+// Protected: Delete admin - demo github
 router.delete("/:id", verifyAdminToken, async (req, res) => {
   try {
     const admin = await AdminUser.findByIdAndDelete(req.params.id);
